@@ -13,10 +13,35 @@ public class Main {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        JPanel bufferPanel = new JPanel(new GridLayout());
+        CustomCollection placeholderCollection = () -> 0;
+
+        tabbedPane.addTab("Circular Buffer", null, generateTabContent(placeholderCollection, "Circular Buffer"));
+        tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
+
+        tabbedPane.addTab("Linked List", null, generateTabContent(placeholderCollection, "Linked List"));
+        tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
+
+        tabbedPane.addTab("Tree Map", null, generateTabContent(placeholderCollection, "Tree Map"));
+        tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
+
+        frame.add(tabbedPane);
+        frame.setVisible(true);
+    }
+
+    private static JPanel generateTabContent(CustomCollection collection, String title){
+        JPanel contentPanel = new JPanel(new GridLayout());
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        panel.add(Box.createRigidArea(new Dimension(0, 15)));
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(titleLabel.getFont().deriveFont(24f));
+        panel.add(titleLabel);
+
+        JLabel size = new JLabel("Size :" + collection.getSize());
+        panel.add(size);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 15)));
 
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
         JButton importButton = new JButton("Import dataset");
@@ -47,7 +72,7 @@ public class Main {
 
         panel.add(speedPanel);
 
-        bufferPanel.add(panel);
+        contentPanel.add(panel);
 
         DefaultListModel<String> l1 = new DefaultListModel<>();
         l1.addElement("Item1");
@@ -59,28 +84,13 @@ public class Main {
 
 
         JPanel listPanel = new JPanel();
-        //listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setLayout(new BorderLayout());
         listPanel.add(list, BorderLayout.CENTER);
         listPanel.add(new JLabel("Collection contents:"), BorderLayout.NORTH);
-        //listPanel.add(list);
 
 
-        bufferPanel.add(listPanel);
+        contentPanel.add(listPanel);
 
-
-        tabbedPane.addTab("Circular Buffer", null, bufferPanel,
-                "Buffer");
-        tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
-
-        JPanel linkedListPanel = new JPanel(new BorderLayout());
-
-        tabbedPane.addTab("Linked List", null, linkedListPanel,
-                "List");
-        tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
-        frame.add(tabbedPane);
-        frame.setVisible(true);
-
-
+        return contentPanel;
     }
 }
