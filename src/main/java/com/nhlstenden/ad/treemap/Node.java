@@ -4,9 +4,11 @@ public class Node
 {
     public Node left = null;
     public Node right = null;
-    public int payload;
+    public int key;
+    public int value;
 
-    public Node(int payload) {
-        this.payload = payload;
+    public Node(int key, int value) {
+        this.key = key;
+        this.value = value;
     }
 }
