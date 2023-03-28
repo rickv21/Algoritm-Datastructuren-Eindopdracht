@@ -1,5 +1,7 @@
 package com.nhlstenden.ad;
 
+import com.nhlstenden.ad.data.CustomCollection;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -13,7 +15,32 @@ public class Main {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        CustomCollection placeholderCollection = () -> 0;
+        CustomCollection placeholderCollection = new CustomCollection() {
+            @Override
+            public boolean add(Object key, Object value) {
+                return false;
+            }
+
+            @Override
+            public boolean contains(Object key) {
+                return false;
+            }
+
+            @Override
+            public Object get(Object key) {
+                return null;
+            }
+
+            @Override
+            public Object remove(Object key) {
+                return null;
+            }
+
+            @Override
+            public int getSize() {
+                return 0;
+            }
+        };
 
         tabbedPane.addTab("Circular Buffer", null, generateTabContent(placeholderCollection, "Circular Buffer"));
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
@@ -33,6 +60,7 @@ public class Main {
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        panel.add(Box.createRigidArea(new Dimension(10, 0)));
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
         JLabel titleLabel = new JLabel(title);
         titleLabel.setFont(titleLabel.getFont().deriveFont(24f));
@@ -48,20 +76,26 @@ public class Main {
         panel.add(importButton);
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        JButton sort1 = new JButton("Sort1");
+        panel.add(new JLabel("Sorting:"));
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        JButton sort1 = new JButton("Bubble Sort");
         panel.add(sort1);
 
-        panel.add(Box.createRigidArea(new Dimension(0, 15)));
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        JButton sort2 = new JButton("Sort2");
+        JButton sort2 = new JButton("Merge Sort");
         panel.add(sort2);
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        JButton search1 = new JButton("Search1");
-        panel.add(search1);
-        panel.add(Box.createRigidArea(new Dimension(0, 15)));
+        panel.add(new JLabel("Searching:"));
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        JButton search2 = new JButton("Search2");
+        JButton search1 = new JButton("Sequential Search");
+        panel.add(search1);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        JButton search2 = new JButton("Binary Search");
         panel.add(search2);
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
 
@@ -82,12 +116,10 @@ public class Main {
         JList<String> list = new JList<>(l1);
         list.setBorder(new LineBorder(Color.BLACK));
 
-
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BorderLayout());
         listPanel.add(list, BorderLayout.CENTER);
         listPanel.add(new JLabel("Collection contents:"), BorderLayout.NORTH);
-
 
         contentPanel.add(listPanel);
 
