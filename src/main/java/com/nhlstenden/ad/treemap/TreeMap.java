@@ -1,11 +1,18 @@
 package com.nhlstenden.ad.treemap;
 
+import java.util.ArrayList;
+
 public class TreeMap
 {
-    public Node root;
+    public Node root = null;
+
+    private int size;
+
+    private ArrayList<Node> nodes;
 
     public TreeMap() {
-        root = new Node(10, 15);
+        nodes = new ArrayList<>();
+        this.size = 0;
     }
 
     /**
@@ -16,6 +23,11 @@ public class TreeMap
      * @return a new node if a position is found, and then recursively return the parent in order to build the treemap.
      */
     public Node add(Node parent, int key, int value) {
+        if (root == null) {
+            root = new Node(key, value);
+            size++;
+            return root;
+        }
         if (parent != null) {
             // Check if the key is smaller or greater than the key of the parent node.
             if (key < parent.key) {
@@ -28,6 +40,7 @@ public class TreeMap
             return parent;
         } else {
             // If a position is found, return a new node with the specified key value pair in order to place it in the found position.
+            size++;
             return new Node(key, value);
         }
     }
@@ -72,6 +85,35 @@ public class TreeMap
     }
 
     /**
+     * Balances the treemap by changing the root node, making the amount of elements on the left of the new root node
+     * equal to the amount of elements on the right of the new root node.
+     * @param parent the root node of the treemap.
+     */
+    public void balanceTree(Node parent) {
+        populateNodeWithNodes(parent);
+        // Sort the nodes arraylist based on key from lowest to highest.
+        nodes.sort((node1, node2) -> {
+            if (node1.key == node2.key) {
+                return 0;
+            }
+            return node1.key < node2.key ? -1 : 1;
+        });
+        // Get the middle node from the arraylist.
+        Node middleNode = nodes.get((nodes.size() / 2));
+        // Remove the middle node from the arraylist.
+        nodes.remove(nodes.size() / 2);
+        // Add the middle node to the beginning of the arraylist.
+        nodes.add(0, middleNode);
+        // Reset the treemap and the size variable.
+        this.root = null;
+        this.size = 0;
+        // Add each node from the arraylist to the empty treemap.
+        for (Node node : this.nodes) {
+            add(this.root, node.key, node.value);
+        }
+    }
+
+    /**
      * Finds the smallest child node of a specified parent node.
      * @param parent the parent node.
      * @return the smallest child node of the parent node.
@@ -86,8 +128,21 @@ public class TreeMap
     }
 
     /**
+     * Populates the ArrayList named nodes with all the nodes from the specified treemap.
+     * @param parent the parent node of the treemap.
+     */
+    public void populateNodeWithNodes(Node parent) {
+        // Traverse through the treemap using preorder traversal and add each node of the treemap to the nodes arraylist.
+        if (parent != null) {
+            this.nodes.add(parent);
+            populateNodeWithNodes(parent.left);
+            populateNodeWithNodes(parent.right);
+        }
+    }
+
+    /**
      * Prints the key value pairs of all the nodes in a treemap to the console.
-     * @param parent the parent node.
+     * @param parent the parent node of the treemap.
      */
     public void printNodes(Node parent) {
         // Traverse through the treemap using preorder traversal and print the key value pairs of each node.
@@ -96,5 +151,9 @@ public class TreeMap
             printNodes(parent.left);
             printNodes(parent.right);
         }
+    }
+
+    public int getSize() {
+        return this.size;
     }
 }
