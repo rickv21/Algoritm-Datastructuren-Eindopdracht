@@ -2,7 +2,7 @@ package com.nhlstenden.ad.treemap;
 
 import java.util.ArrayList;
 
-public class TreeMap
+public class TreeMap<T>
 {
     public Node root = null;
 
@@ -67,10 +67,12 @@ public class TreeMap
         } else {
             // If the found node that is to be removed has no left child node, replace the found node with its right child node.
             if (parent.left == null) {
+                size--;
                 return parent.right;
             }
             // If the found node that is to be removed has no right child node, replace the found node with its left child node.
             if (parent.right == null) {
+                size--;
                 return parent.left;
             }
             /* If the found node has two child nodes, find the smallest node on the right side of the found node, replace the
