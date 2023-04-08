@@ -1,4 +1,6 @@
-package com.nhlstenden.ad;
+package com.nhlstenden.ad.sorting;
+
+import com.nhlstenden.ad.data.CustomCollection;
 
 import java.util.Comparator;
 

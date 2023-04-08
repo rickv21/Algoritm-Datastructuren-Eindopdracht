@@ -1,5 +1,8 @@
-package com.nhlstenden.ad;
+package com.nhlstenden.ad.sorting;
 
+import com.nhlstenden.ad.data.CustomCollection;
+
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class BubbleSorter<T extends Comparable<T>> implements Sorter<T> {
@@ -12,12 +15,16 @@ public class BubbleSorter<T extends Comparable<T>> implements Sorter<T> {
      */
     @Override
     public void sort(CustomCollection<T> collection, Comparator<T> comparator) {
+        System.out.println(Arrays.toString(collection.getArray()));
         int n = collection.getArray().length;
         for (int i = 0; i < n - 1; i++) {
             boolean swapped = false;
             for (int j = 0; j < n - i - 1; j++) {
                 T curr = collection.getArray()[j];
                 T next = collection.getArray()[j + 1];
+                if(next == null){
+                    break;
+                }
                 if (comparator.compare(curr, next) > 0) {
                     collection.getArray()[j] = next;
                     collection.getArray()[j + 1] = curr;
@@ -28,5 +35,6 @@ public class BubbleSorter<T extends Comparable<T>> implements Sorter<T> {
                 break;
             }
         }
+        System.out.println(Arrays.toString(collection.getArray()));
     }
 }
