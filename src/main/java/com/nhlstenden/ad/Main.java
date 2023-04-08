@@ -3,15 +3,17 @@ package com.nhlstenden.ad;
 import com.nhlstenden.ad.data.CircularBuffer;
 import com.nhlstenden.ad.data.CustomCollection;
 import com.nhlstenden.ad.data.treemap.TreeMap;
+import com.nhlstenden.ad.searching.Searcher;
+import com.nhlstenden.ad.searching.SequentialSearch;
 import com.nhlstenden.ad.sorting.BubbleSorter;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -127,10 +129,36 @@ public class Main {
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
 
         panel.add(new JLabel("Searching:"));
+
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        JButton search1 = new JButton("Sequential Search");
-        panel.add(search1);
+        JLabel resultLabel = new JLabel("Result: ");
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.PAGE_AXIS));
+
+        inputPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        JTextField jTextField = new JTextField();
+        jTextField.setSize(200, 20);
+        jTextField.setMaximumSize(new Dimension(200, 20));
+        inputPanel.add(jTextField);
+        panel.add(inputPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        JButton sequentialSearch = new JButton("Sequential Search");
+        sequentialSearch.addActionListener(e -> {
+            SequentialSearch<String, Student> search = new SequentialSearch<>();
+            Set<Student> students = search.search(jTextField.getText(), collection, Student::getFirstName);
+            students.addAll(search.search(jTextField.getText(), collection, Student::getLastName));
+            String output = Arrays.toString(students.toArray());
+            System.out.println(output);
+            resultLabel.setText("Result: " + (!students.isEmpty() ? output : "not found"));
+        });
+        panel.add(resultLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        panel.add(sequentialSearch);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         JButton search2 = new JButton("Binary Search");

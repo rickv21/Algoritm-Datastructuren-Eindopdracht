@@ -168,29 +168,9 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
         }
     }
 
-    /**
-     * Sequential search algorithm that uses preorder traversal to find a node in a treemap.
-     * @param parent the treemap.
-     * @param key the key that needs to be searched.
-     * @return the node if it is found or null if the node with the specified key does not exist.
-     */
-    public Node<K, T> sequentialSearch(Node<K, T> parent, K key) {
-        if (parent != null) {
-            if (parent.getKey().equals(key)) {
-                return parent;
-            }
-            Node<K, T> left = sequentialSearch(parent.getLeft(), key);
-            if (left != null) {
-                return left;
-            }
-            return sequentialSearch(parent.getRight(), key);
-        }
-        return null;
-    }
-
     @Override
     public T[] getArray() {
-        T[] array = (T[]) new Object[size];
+        T[] array  = (T[]) new Comparable[size];
         for(int i = 0; i < nodes.size(); i++){
             Node<K, T> node = nodes.get(i);
             array[i] = node.getValue();
