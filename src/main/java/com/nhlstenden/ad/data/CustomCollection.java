@@ -1,10 +1,12 @@
 package com.nhlstenden.ad.data;
 
-public interface CustomCollection<T> {
+public interface CustomCollection<V> {
 
-    T[] getArray();
+    V[] getArray();
 
     String[] getStringArray();
 
     int getSize();
+
+    void clear();
 }

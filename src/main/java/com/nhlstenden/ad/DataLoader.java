@@ -4,14 +4,18 @@ import com.opencsv.CSVReader;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataLoader {
 
     public List<Student> loadStudents(){
+        InputStream is = getClass().getClassLoader().getResourceAsStream("data.csv");
+
         List<Student> students = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader("data.csv"))) {
+        try (CSVReader reader = new CSVReader(new InputStreamReader(is))) {
             List<String[]> rows = reader.readAll();
             rows.remove(0); // Remove header row
 
@@ -23,6 +27,7 @@ public class DataLoader {
                 int age = Integer.parseInt(row[4]);
 
                 Student student = new Student(id, studentNumber, firstName, lastName, age);
+                System.out.println("Loading: " + student);
                 students.add(student);
             }
 

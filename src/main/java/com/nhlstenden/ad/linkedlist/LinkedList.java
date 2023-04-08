@@ -1,15 +1,16 @@
 package com.nhlstenden.ad.linkedlist;
 
-public class LinkedList
-{
-    private Node head = null;
+import com.nhlstenden.ad.data.CustomCollection;
+
+public class LinkedList<K extends Comparable<K>, V> implements CustomCollection<V> {
+    private ListNode<K, V> head = null;
     private int size;
 
-    public Node getHead() {
+    public ListNode<K, V> getHead() {
         return head;
     }
 
-    public void setHead(Node head) {
+    public void setHead(ListNode<K, V> head) {
         this.head = head;
     }
 
@@ -18,10 +19,9 @@ public class LinkedList
      * @param key the key of the new node.
      * @param value the value of the new node.
      */
-    public void add(int key, int value)
-    {
+    public void add(K key, V value) {
         // Creates a new node and sets the element next of the node to null.
-        Node node = new Node(key, value);
+        ListNode<K, V> node = new ListNode<>(key, value);
         node.setNext(null);
 
         // If the head node is null, the new node becomes the head node.
@@ -29,7 +29,7 @@ public class LinkedList
             this.head = node;
         } else {
             // If the head node is not null, loop through the linked list until the last node is reached, and set the new node as the next node.
-            Node headNode = head;
+            ListNode<K, V> headNode = head;
             while (headNode.getNext() != null) {
                 headNode = headNode.getNext();
             }
@@ -42,61 +42,88 @@ public class LinkedList
      * Removes an element from the linked list with a specific key.
      * @param key the key.
      */
-    public void remove(int key) {
+    public void remove(K key) {
         // If the element to be removed is the first element, set the root node to the node next to the root node.
-        if (key == 0) {
+        if (key.equals(head.getKey())) {
             this.head = this.head.getNext();
         }
         // If the key is a number lower than 0, return.
-        else if (key < 0) {
+        else if (key.compareTo(head.getKey()) < 0) {
             return;
         } else {
             // If the key is greater than 0, loop until the element right before the element that is to be deleted,
             // store the node that is to be deleted in deletedNode and set the next node of the headnode to the next node of the deleted node.
-            Node deletedNode;
-            Node headNode = this.head;
-            int i = 0;
-            while (i < key - 1) {
+            ListNode<K, V> deletedNode;
+            ListNode<K, V> headNode = this.head;
+            while (headNode.getNext() != null && key.compareTo(headNode.getNext().getKey()) > 0) {
                 headNode = headNode.getNext();
-                i++;
             }
-            deletedNode = headNode.getNext();
-            headNode.setNext(deletedNode.getNext());
-        }
-        size--;
-    }
-
-    /**
-     * Searches for an element with a specific key by looping through the collection and returning the found element.
-     * @param key the key of the specified element.
-     * @return the node if the node with the specified key is found or null if it is not found.
-     */
-    public Node sequentialSearch(int key) {
-        // Loop through all the nodes of the linked list and check if the node is the node with the specified key.
-        Node parent = this.head;
-        while (parent.getNext() != null) {
-            // Return the node if the node is found.
-            if (parent.getKey() == key) {
-                return parent;
+            if (headNode.getNext() == null) {
+                return;
             }
-            parent = parent.getNext();
+            if (key.equals(headNode.getNext().getKey())) {
+                deletedNode = headNode.getNext();
+                headNode.setNext(deletedNode.getNext());
+                size--;
+            }
         }
-        // Return null if the node with the key does not exist.
-        return null;
     }
 
     /**
      * Print the nodes to the console.
      */
-    public void printNodes()
-    {
-        Node node = head;
+    public void printNodes() {
+        ListNode<K, V> node = head;
 
-        while (node.getNext() != null)
-        {
+        while (node.getNext() != null) {
             System.out.println("Key: " + node.getKey() + " Value: " + node.getValue());
             node = node.getNext();
         }
         System.out.println("Key: " + node.getKey() + " Value: " + node.getValue());
+    }
+
+    @Override
+    public V[] getArray() {
+        V[] array  = (V[]) new Comparable[size];
+        ListNode<K, V> node = head;
+
+        int i = 0;
+        while (node.getNext() != null) {
+            array[i] = node.getValue();
+            node = node.getNext();
+            i++;
+        }
+        array[i] = node.getValue();
+
+        return array;
+    }
+
+    @Override
+    public String[] getStringArray() {
+        String[] array =  new String[size];
+        ListNode<K, V> node = head;
+
+        int i = 0;
+        if(head == null){
+            return array;
+        }
+        while (node.getNext() != null) {
+            array[i] = node.getValue().toString();
+            node = node.getNext();
+            i++;
+        }
+        array[i] = node.getValue().toString();
+        return array;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public void clear() {
+        head = null;
+        size = 0;
     }
 }
