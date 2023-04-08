@@ -1,4 +1,4 @@
-package com.nhlstenden.ad;
+package com.nhlstenden.ad.data;
 
 import java.util.NoSuchElementException;
 
@@ -24,7 +24,8 @@ public class CircularBuffer<T extends Comparable<T>> implements CustomCollection
      *
      * @param element The element to be added.
      */
-    public void add(T element) {
+    @Override
+    public boolean add(T element) {
         // Calculating the index to add the element
         int index = (tail + 1) % capacity;
 
@@ -44,6 +45,12 @@ public class CircularBuffer<T extends Comparable<T>> implements CustomCollection
         // Incrementing the tail pointer to point
         // to the element added currently
         tail = index;
+        return true;
+    }
+
+    @Override
+    public T[] getCollection() {
+        return null;
     }
 
     /**
@@ -85,5 +92,14 @@ public class CircularBuffer<T extends Comparable<T>> implements CustomCollection
     @Override
     public T[] getArray() {
         return buffer;
+    }
+
+    @Override
+    public String[] getStringArray() {
+        String[] stringArray = new String[size];
+        for(int i = 0; i < size; i++){
+            stringArray[i] = buffer[i].toString();
+        }
+        return stringArray;
     }
 }

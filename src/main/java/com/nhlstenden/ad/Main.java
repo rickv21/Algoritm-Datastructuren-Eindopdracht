@@ -1,6 +1,8 @@
 package com.nhlstenden.ad;
 
+import com.nhlstenden.ad.data.CircularBuffer;
 import com.nhlstenden.ad.data.CustomCollection;
+import com.nhlstenden.ad.sorting.BubbleSorter;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -9,75 +11,32 @@ import java.awt.event.KeyEvent;
 import java.util.Comparator;
 
 public class Main {
+
     public static void main(String[] args) {
-        CircularBuffer<Integer> buffer = new CircularBuffer<>(5);
-        buffer.add(2);
-        buffer.add(9);
-        buffer.add(1);
-        buffer.add(20);
-        buffer.add(6);
-        buffer.add(7);
-
-        buffer.add(3);
-
-        System.out.println(buffer);
-
-        BubbleSorter<Integer> bubbleSorter = new BubbleSorter<>();
-        Comparator<Integer> comparator = Integer::compareTo;
-        bubbleSorter.sort(buffer, comparator);
-
-        System.out.println("after");
-        System.out.println(buffer);
-
-
-
         JFrame frame = new JFrame();
         frame.setSize(700, 500);
         frame.setTitle("Algoritme & Datastructuren");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        CustomCollection placeholderCollection = new CustomCollection() {
-            @Override
-            public boolean add(Object key, Object value) {
-                return false;
-            }
-
-            @Override
-            public boolean contains(Object key) {
-                return false;
-            }
-
-            @Override
-            public Object get(Object key) {
-                return null;
-            }
-
-            @Override
-            public Object remove(Object key) {
-                return null;
-            }
-
-            @Override
-            public int getSize() {
-                return 0;
-            }
-        };
-
-        tabbedPane.addTab("Circular Buffer", null, generateTabContent(placeholderCollection, "Circular Buffer"));
+        tabbedPane.addTab("Circular Buffer", null, generateTabContent(new CircularBuffer<>(5), "Circular Buffer"));
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 
-        tabbedPane.addTab("Linked List", null, generateTabContent(placeholderCollection, "Linked List"));
+        tabbedPane.addTab("Linked List", null, generateTabContent(new CircularBuffer<>(5), "Linked List"));
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
-        tabbedPane.addTab("Tree Map", null, generateTabContent(placeholderCollection, "Tree Map"));
+        tabbedPane.addTab("Tree Map", null, generateTabContent(new CircularBuffer<>(5), "Tree Map"));
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
         frame.add(tabbedPane);
         frame.setVisible(true);
     }
 
-    private static JPanel generateTabContent(CustomCollection collection, String title){
+    private static JPanel generateTabContent(CustomCollection<Student> collection, String title){
+        collection.add(new Student(1, 2, "test", "test", 20));
+        collection.add(new Student(3, 2322, "hello", "world", 15));
+
         JPanel contentPanel = new JPanel(new GridLayout());
 
         JPanel panel = new JPanel();
@@ -98,16 +57,42 @@ public class Main {
         panel.add(importButton);
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        panel.add(new JLabel("Sorting:"));
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        DefaultListModel<String> l1 = new DefaultListModel<>();
+        JLabel bubbleSortLabel = new JLabel();
 
-        JButton sort1 = new JButton("Bubble Sort");
-        panel.add(sort1);
+        if(title.equals("Tree Map")){
+            JButton sort = new JButton("Balance");
+            panel.add(new JLabel("Balancing:"));
+            panel.add(Box.createRigidArea(new Dimension(0, 10)));
+            panel.add(sort);
+        } else {
+            panel.add(new JLabel("Bubble Sort:"));
+            panel.add(Box.createRigidArea(new Dimension(0, 10)));
+            JButton firstNameSort = new JButton("Sort by first name");
+            firstNameSort.addActionListener(e -> {
+                bubbleSort(collection, Comparator.comparing(Student::getFirstName), bubbleSortLabel, l1);
+            });
+            panel.add(firstNameSort);
+            panel.add(Box.createRigidArea(new Dimension(0, 10)));
+            JButton lastNameSort = new JButton("Sort by last name");
+            lastNameSort.addActionListener(e -> {
+                bubbleSort(collection, Comparator.comparing(Student::getLastName),bubbleSortLabel, l1);
+            });
+            panel.add(lastNameSort);
+            panel.add(Box.createRigidArea(new Dimension(0, 10)));
+            JButton ageSort = new JButton("Sort by age");
+            ageSort.addActionListener(e -> {
+                bubbleSort(collection, Comparator.comparing(Student::getAge),bubbleSortLabel, l1);
+            });
+            panel.add(ageSort);
+            panel.add(Box.createRigidArea(new Dimension(0, 10)));
+            JButton studentNumberSort = new JButton("Sort by student number");
+            studentNumberSort.addActionListener(e -> {
+                bubbleSort(collection, Comparator.comparing(Student::getStudentNumber),bubbleSortLabel, l1);
+            });
+            panel.add(studentNumberSort);
+        }
 
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        JButton sort2 = new JButton("Merge Sort");
-        panel.add(sort2);
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
 
         panel.add(new JLabel("Searching:"));
@@ -125,16 +110,16 @@ public class Main {
         speedPanel.setLayout(new BoxLayout(speedPanel, BoxLayout.PAGE_AXIS));
         JLabel label = new JLabel("Speed:");
         speedPanel.add(label);
+        speedPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        speedPanel.add(new JLabel("Bubble Sort:"));
+
+        speedPanel.add(bubbleSortLabel);
 
         panel.add(speedPanel);
 
         contentPanel.add(panel);
 
-        DefaultListModel<String> l1 = new DefaultListModel<>();
-        l1.addElement("Item1");
-        l1.addElement("Item2");
-        l1.addElement("Item3");
-        l1.addElement("Item4");
+        updateListModel(l1, collection.getStringArray());
         JList<String> list = new JList<>(l1);
         list.setBorder(new LineBorder(Color.BLACK));
 
@@ -146,5 +131,23 @@ public class Main {
         contentPanel.add(listPanel);
 
         return contentPanel;
+    }
+
+    private static void bubbleSort(CustomCollection<Student> collection, Comparator<Student> comparator, JLabel label, DefaultListModel<String> defaultListModel){
+        BubbleSorter<Student> bubbleSorter = new BubbleSorter<>();
+        long start = System.nanoTime();
+        bubbleSorter.sort(collection, comparator);
+        long end = System.nanoTime();
+        label.setText((end - start) / 1000_000f + " ms ");
+        //bubbleSortLabel.paintImmediately(bubbleSortLabel.getVisibleRect());
+        System.out.println(label.getText());
+        updateListModel(defaultListModel, collection.getStringArray());
+    }
+
+    private static void updateListModel(DefaultListModel<String> defaultListModel, String[] array){
+        defaultListModel.clear();
+        for(String s : array){
+            defaultListModel.addElement(s);
+        }
     }
 }

@@ -1,14 +1,14 @@
 package com.nhlstenden.ad.data;
 
-public interface CustomCollection<K, T> {
+public interface CustomCollection<T> {
 
-    boolean add(K key, T value);
+    boolean add(T value);
 
-    boolean contains(K key);
+    T[] getArray();
 
-    T get(K key);
+    String[] getStringArray();
 
-    T remove(K key);
+    T[] getCollection();
 
     int getSize();
 }
