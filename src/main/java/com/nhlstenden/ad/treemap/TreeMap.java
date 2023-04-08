@@ -30,11 +30,11 @@ public class TreeMap<T>
         }
         if (parent != null) {
             // Check if the key is smaller or greater than the key of the parent node.
-            if (key < parent.key) {
-                parent.left = add(parent.left, key, value);
+            if (key < parent.getKey()) {
+                parent.setLeft(add(parent.getLeft(), key, value));
             }
-            else if (key > parent.key) {
-                parent.right = add(parent.right, key, value);
+            else if (key > parent.getKey()) {
+                parent.setRight(add(parent.getRight(), key, value));
             }
             // Recursively return parent to build treemap.
             return parent;
@@ -57,30 +57,30 @@ public class TreeMap<T>
         if (parent == null) {
             return null;
         }
-        if (parent.key != key) {
+        if (parent.getKey() != key) {
             // Check if the key is smaller or greater than the key of the parent node.
-            if (key < parent.key) {
-                parent.left = remove(parent.left, key);
+            if (key < parent.getKey()) {
+                parent.setLeft(remove(parent.getLeft(), key));
             } else {
-                parent.right = remove(parent.right, key);
+                parent.setRight(remove(parent.getRight(), key));
             }
         } else {
             // If the found node that is to be removed has no left child node, replace the found node with its right child node.
-            if (parent.left == null) {
+            if (parent.getLeft() == null) {
                 size--;
-                return parent.right;
+                return parent.getRight();
             }
             // If the found node that is to be removed has no right child node, replace the found node with its left child node.
-            if (parent.right == null) {
+            if (parent.getRight() == null) {
                 size--;
-                return parent.left;
+                return parent.getLeft();
             }
             /* If the found node has two child nodes, find the smallest node on the right side of the found node, replace the
                key value pair of the found node with the smallest node and then remove the smallest node from the tree. */
-            Node newParent = getSmallestNode(parent.right);
-            parent.key = newParent.key;
-            parent.value = newParent.value;
-            parent.right = remove(parent.right, newParent.key);
+            Node newParent = getSmallestNode(parent.getRight());
+            parent.setKey(newParent.getKey());
+            parent.setValue(newParent.getValue());
+            parent.setRight(remove(parent.getRight(), newParent.getKey()));
         }
         // Recursively return parent to build treemap.
         return parent;
@@ -95,10 +95,10 @@ public class TreeMap<T>
         populateNodeWithNodes(parent);
         // Sort the nodes arraylist based on key from lowest to highest.
         nodes.sort((node1, node2) -> {
-            if (node1.key == node2.key) {
+            if (node1.getKey() == node2.getKey()) {
                 return 0;
             }
-            return node1.key < node2.key ? -1 : 1;
+            return node1.getKey() < node2.getKey() ? -1 : 1;
         });
         // Get the middle node from the arraylist.
         Node middleNode = nodes.get((nodes.size() / 2));
@@ -111,7 +111,7 @@ public class TreeMap<T>
         this.size = 0;
         // Add each node from the arraylist to the empty treemap.
         for (Node node : this.nodes) {
-            add(this.root, node.key, node.value);
+            add(this.root, node.getKey(), node.getValue());
         }
     }
 
@@ -122,8 +122,8 @@ public class TreeMap<T>
      */
     public Node getSmallestNode(Node parent) {
         // Find the last and smallest node on the left side of the parent.
-        while (parent.left != null) {
-            parent = parent.left;
+        while (parent.getLeft() != null) {
+            parent = parent.getLeft();
         }
         // Return the smallest node.
         return parent;
@@ -137,8 +137,8 @@ public class TreeMap<T>
         // Traverse through the treemap using preorder traversal and add each node of the treemap to the nodes arraylist.
         if (parent != null) {
             this.nodes.add(parent);
-            populateNodeWithNodes(parent.left);
-            populateNodeWithNodes(parent.right);
+            populateNodeWithNodes(parent.getLeft());
+            populateNodeWithNodes(parent.getRight());
         }
     }
 
@@ -149,10 +149,30 @@ public class TreeMap<T>
     public void printNodes(Node parent) {
         // Traverse through the treemap using preorder traversal and print the key value pairs of each node.
         if (parent != null) {
-            System.out.println("Node with key: " + parent.key + " and value: " + parent.value);
-            printNodes(parent.left);
-            printNodes(parent.right);
+            System.out.println("Node with key: " + parent.getKey() + " and value: " + parent.getValue());
+            printNodes(parent.getLeft());
+            printNodes(parent.getRight());
         }
+    }
+
+    /**
+     * Sequential search algorithm that uses preorder traversal to find a node in a treemap.
+     * @param parent the treemap.
+     * @param key the key that needs to be searched.
+     * @return the node if it is found or null if the node with the specified key does not exist.
+     */
+    public Node sequentialSearch(Node parent, int key) {
+        if (parent != null) {
+            if (parent.getKey() == key) {
+                return parent;
+            }
+            Node left = sequentialSearch(parent.getLeft(), key);
+            if (left != null) {
+                return left;
+            }
+            return sequentialSearch(parent.getRight(), key);
+        }
+        return null;
     }
 
     public int getSize() {
