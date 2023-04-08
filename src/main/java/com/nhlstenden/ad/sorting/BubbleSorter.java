@@ -15,7 +15,6 @@ public class BubbleSorter<T extends Comparable<T>> implements Sorter<T> {
      */
     @Override
     public void sort(CustomCollection<T> collection, Comparator<T> comparator) {
-        System.out.println(Arrays.toString(collection.getArray()));
         int n = collection.getArray().length;
         for (int i = 0; i < n - 1; i++) {
             boolean swapped = false;
@@ -35,6 +34,5 @@ public class BubbleSorter<T extends Comparable<T>> implements Sorter<T> {
                 break;
             }
         }
-        System.out.println(Arrays.toString(collection.getArray()));
     }
 }

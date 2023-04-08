@@ -24,7 +24,6 @@ public class CircularBuffer<T extends Comparable<T>> implements CustomCollection
      *
      * @param element The element to be added.
      */
-    @Override
     public boolean add(T element) {
         // Calculating the index to add the element
         int index = (tail + 1) % capacity;
@@ -46,11 +45,6 @@ public class CircularBuffer<T extends Comparable<T>> implements CustomCollection
         // to the element added currently
         tail = index;
         return true;
-    }
-
-    @Override
-    public T[] getCollection() {
-        return null;
     }
 
     /**
