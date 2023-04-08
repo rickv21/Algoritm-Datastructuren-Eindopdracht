@@ -5,6 +5,14 @@ public class LinkedList
     private Node head = null;
     private int size;
 
+    public Node getHead() {
+        return head;
+    }
+
+    public void setHead(Node head) {
+        this.head = head;
+    }
+
     public void add(int key, int value)
     {
         Node node = new Node(key, value);
@@ -39,6 +47,17 @@ public class LinkedList
             headNode.setNext(deletedNode.getNext());
         }
         size--;
+    }
+
+    public Node sequentialSearch(int key) {
+        Node parent = this.head;
+        while (parent.getNext() != null) {
+            if (parent.getKey() == key) {
+                return parent;
+            }
+            parent = parent.getNext();
+        }
+        return null;
     }
 
     public void printNodes()
