@@ -3,7 +3,7 @@ package com.nhlstenden.ad.data;
 import java.util.NoSuchElementException;
 
 public class CircularBuffer<T extends Comparable<T>> implements CustomCollection<T> {
-    private final T[] buffer;
+    private T[] buffer;
     private int head;
     private int tail;
     private int capacity;
@@ -84,8 +84,22 @@ public class CircularBuffer<T extends Comparable<T>> implements CustomCollection
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public void clear() {
+        this.buffer = (T[]) new Comparable[capacity];
+        this.head = 0;
+        this.tail = -1;
+        this.size = 0;
+    }
+
+    @Override
     public T[] getArray() {
         return buffer;
+    }
+
+    @Override
+    public void setArray(Comparable<T>[] arr) {
+        if (capacity >= 0) System.arraycopy(arr, 0, buffer, 0, capacity);
     }
 
     @Override

@@ -5,16 +5,21 @@ import com.nhlstenden.ad.data.CustomCollection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> {
-    public Node<K, T> root = null;
+public class TreeMap<K extends Comparable<K>, V> implements CustomCollection<V> {
+    public Node<K, V> root = null;
 
     private int size;
 
-    private final List<Node<K, T>> nodes;
+    private final List<Node<K, V>> nodes;
 
     public TreeMap() {
         nodes = new ArrayList<>();
         this.size = 0;
+    }
+
+    public List<Node<K, V>> getNodes()
+    {
+        return nodes;
     }
 
     /**
@@ -24,17 +29,21 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
      * @param value the value of the new element.
      * @return a new node if a position is found, and then recursively return the parent in order to build the treemap.
      */
-    public Node<K, T> add(Node<K, T> parent, K key, T value) {
+    public Node<K, V> add(Node<K, V> parent, K key, V value) {
         if (root == null) {
             root = new Node<>(key, value);
             size++;
-            System.out.println(value + " - " +size);
-            nodes.clear();
-            populateNodeWithNodes(root);
+            //System.out.println(value + " - " +size);
+            //populateNodeWithNodes(root);
+//            for (Node<K, V> node : this.nodes) {
+//                System.out.println("Key:" + node.getKey() + "Counter: " + counter);
+//                counter++;
+//            }
+            //System.out.println("----------------");
             return root;
         }
         if (parent != null) {
-            System.out.println(value + " - no number");
+            //System.out.println(value + " - no number");
             // Check if the key is smaller or greater than the key of the parent node.
             if (key.compareTo(parent.getKey()) < 0) {
                 parent.setLeft(add(parent.getLeft(), key, value));
@@ -42,13 +51,15 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
                 parent.setRight(add(parent.getRight(), key, value));
             }
             // Recursively return parent to build treemap.
-            nodes.clear();
-            populateNodeWithNodes(root);
+//            for (Node<K, V> node : this.nodes) {
+//                System.out.println("Key: "+ node.getKey() + " Counter: " + counter);
+//                counter++;
+//            }
+            //System.out.println("----------------");
             return parent;
         } else {
             // If a position is found, return a new node with the specified key value pair in order to place it in the found position.
             size++;
-            System.out.println(value + " - " +size);
             return new Node<>(key, value);
         }
     }
@@ -60,7 +71,7 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
      * @return null if the element with the specific key does not exist, parent.left or parent.right if
      * the node that is to be removed has one child node, or recursively return the parent in order to build the treemap.
      */
-    public Node<K, T> remove(Node<K, T> parent, K key) {
+    public Node<K, V> remove(Node<K, V> parent, K key) {
         // If the node with the specified key does not exist, return null.
         if (parent == null) {
             return null;
@@ -86,7 +97,7 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
             }
         /* If the found node has two child nodes, find the smallest node on the right side of the found node, replace the
            key value pair of the found node with the smallest node and then remove the smallest node from the tree. */
-            Node<K, T> newParent = getSmallestNode(parent.getRight());
+            Node<K, V> newParent = getSmallestNode(parent.getRight());
             parent.setKey(newParent.getKey());
             parent.setValue(newParent.getValue());
             parent.setRight(remove(parent.getRight(), newParent.getKey()));
@@ -100,8 +111,10 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
      * equal to the amount of elements on the right of the new root node.
      * @param parent the root node of the treemap.
      */
-    public void balanceTree(Node<K, T> parent) {
-        nodes.clear();
+    public void balanceTree(Node<K, V> parent) {
+        //System.out.println(nodes.size());
+        int counter = 0;
+        //nodes.clear();
         populateNodeWithNodes(parent);
 
         // Sort the nodes arraylist based on key from lowest to highest.
@@ -112,7 +125,7 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
             return node1.getKey().compareTo(node2.getKey()) < 0 ? -1 : 1;
         });
         // Get the middle node from the arraylist.
-        Node<K, T> middleNode = nodes.get((nodes.size() / 2));
+        Node<K, V> middleNode = nodes.get((nodes.size() / 2));
         // Remove the middle node from the arraylist.
         nodes.remove(nodes.size() / 2);
         // Add the middle node to the beginning of the arraylist.
@@ -123,10 +136,15 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
         this.size = 0;
 
         // Add each node from the arraylist to the empty treemap.
-        for (Node<K, T> node : this.nodes) {
-        //    System.out.println(node);
+        for (Node<K, V> node : this.nodes) {
             add(this.root, node.getKey(), node.getValue());
+            counter++;
         }
+        for (Node<K, V> node : this.nodes) {
+            System.out.println("Key: "+ node.getKey() + " Counter: " + counter);
+            counter++;
+        }
+        this.nodes.clear();
 
     }
 
@@ -135,7 +153,7 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
      * @param parent the parent node.
      * @return the smallest child node of the parent node.
      */
-    public Node<K, T> getSmallestNode(Node<K, T> parent) {
+    public Node<K, V> getSmallestNode(Node<K, V> parent) {
         // Find the last and smallest node on the left side of the parent.
         while (parent.getLeft() != null) {
             parent = parent.getLeft();
@@ -148,7 +166,7 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
      * Populates the ArrayList named nodes with all the nodes from the specified treemap.
      * @param parent the parent node of the treemap.
      */
-    public void populateNodeWithNodes(Node<K, T> parent) {
+    public void populateNodeWithNodes(Node<K, V> parent) {
         // Traverse through the treemap using preorder traversal and add each node of the treemap to the nodes arraylist.
         if (parent != null) {
             this.nodes.add(parent);
@@ -161,7 +179,7 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
      * Prints the key value pairs of all the nodes in a treemap to the console.
      * @param parent the parent node of the treemap.
      */
-    public void printNodes(Node<K, T> parent) {
+    public void printNodes(Node<K, V> parent) {
         // Traverse through the treemap using preorder traversal and print the key value pairs of each node.
         if (parent != null) {
             System.out.println(parent.toString(0));
@@ -169,21 +187,26 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
     }
 
     @Override
-    public T[] getArray() {
-        T[] array  = (T[]) new Comparable[size];
+    public V[] getArray() {
+        V[] array  = (V[]) new Comparable[size];
         for(int i = 0; i < nodes.size(); i++){
-            Node<K, T> node = nodes.get(i);
+            Node<K, V> node = nodes.get(i);
             array[i] = node.getValue();
         }
         return array;
     }
 
     @Override
+    public void setArray(Comparable<V>[] arr) {
+        return;
+    }
+
+    @Override
     public String[] getStringArray() {
-        System.out.println(size);
+        System.out.println(nodes.size());
         String[] array =  new String[size];
         for(int i = 0; i < nodes.size(); i++){
-            Node<K, T> node = nodes.get(i);
+            Node<K, V> node = nodes.get(i);
             array[i] = node.getValue().toString();
         }
         return array;
@@ -191,5 +214,12 @@ public class TreeMap<K extends Comparable<K>, T> implements CustomCollection<T> 
 
     public int getSize() {
         return this.size;
+    }
+
+    @Override
+    public void clear() {
+        this.nodes.clear();
+        root = null;
+        this.size = 0;
     }
 }
