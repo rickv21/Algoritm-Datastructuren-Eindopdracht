@@ -157,7 +157,9 @@ public class UITab extends JPanel {
                 ((LinkedList<Integer, Student>) collection).add(key, student);
             }
         }
-        ((TreeMap<Integer, Student>) collection).populateNodeWithNodes(((TreeMap<Integer, Student>) collection).root);
+        if(collection instanceof TreeMap<?, ?>) {
+            ((TreeMap<Integer, Student>) collection).populateNodeWithNodes(((TreeMap<Integer, Student>) collection).root);
+        }
         sizeLabel.setText("Size: " + collection.getSize());
 
     }
@@ -273,6 +275,7 @@ public class UITab extends JPanel {
         sortSpeedLabel.setText((end - start) / 1000_000f + " ms ");
         treeMap.populateNodeWithNodes(treeMap.root);
         updateListModel(treeMap.getStringArray());
+        treeMap.getNodes().clear();
     }
 
     private void updateListModel(String[] array){
