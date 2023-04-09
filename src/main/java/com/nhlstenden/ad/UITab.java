@@ -10,10 +10,8 @@ import com.nhlstenden.ad.sorting.BubbleSorter;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class UITab extends JPanel {
@@ -159,6 +157,9 @@ public class UITab extends JPanel {
                 ((LinkedList<Integer, Student>) collection).add(key, student);
             }
         }
+        if(collection instanceof TreeMap<?, ?>) {
+            ((TreeMap<Integer, Student>) collection).populateNodeWithNodes(((TreeMap<Integer, Student>) collection).root);
+        }
         sizeLabel.setText("Size: " + collection.getSize());
 
     }
@@ -272,6 +273,7 @@ public class UITab extends JPanel {
         treeMap.balanceTree(treeMap.root);
         long end = System.nanoTime();
         sortSpeedLabel.setText((end - start) / 1000_000f + " ms ");
+        treeMap.populateNodeWithNodes(treeMap.root);
         updateListModel(treeMap.getStringArray());
     }
 
