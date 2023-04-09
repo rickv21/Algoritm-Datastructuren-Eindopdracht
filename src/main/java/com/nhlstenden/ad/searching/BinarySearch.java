@@ -41,7 +41,6 @@ public class BinarySearch<K, T extends Comparable<T>> implements Searcher<K, T> 
         // Get the index of the middle element.
         int middleIndex = (firstIndex + lastIndex) / 2;
         T[] array = collection.getArray();
-        Arrays.sort(array);
         // Get the middle element of the array.
         T middleElement = array[middleIndex];
         // Get the key of the middle element.
