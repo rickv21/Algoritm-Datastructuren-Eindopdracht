@@ -179,6 +179,11 @@ public class TreeMap<K extends Comparable<K>, V> implements CustomCollection<V> 
     }
 
     @Override
+    public void setArray(Comparable<V>[] arr) {
+        return;
+    }
+
+    @Override
     public String[] getStringArray() {
         System.out.println(size);
         String[] array =  new String[size];

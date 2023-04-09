@@ -2,20 +2,40 @@ package com.nhlstenden.ad;
 
 import com.opencsv.CSVReader;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import javax.swing.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataLoader {
 
     public List<Student> loadStudents(){
-        InputStream is = getClass().getClassLoader().getResourceAsStream("data.csv");
-
         List<Student> students = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new InputStreamReader(is))) {
+        File file;
+        //InputStream is = getClass().getClassLoader().getResourceAsStream("data.csv");
+        JFileChooser fileChooser = new JFileChooser();
+
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().toLowerCase().endsWith(".csv");
+            }
+
+            @Override
+            public String getDescription() {
+                return "CSV Files (*.csv)";
+            }
+        });
+        int result = fileChooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            file = fileChooser.getSelectedFile();
+            // process selectedFile
+        } else {
+            return students;
+        }
+
+
+        try (CSVReader reader = new CSVReader(new FileReader(file))) {
             List<String[]> rows = reader.readAll();
             rows.remove(0); // Remove header row
 
@@ -33,7 +53,8 @@ public class DataLoader {
 
             // Do something with the list of people
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Dit is geen geldig Student CSV bestand!", "CSV load error", JOptionPane.ERROR_MESSAGE);
+            return new ArrayList<>();
         }
         return students;
     }

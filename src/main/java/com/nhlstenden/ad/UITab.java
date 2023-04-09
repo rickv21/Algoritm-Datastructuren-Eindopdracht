@@ -260,7 +260,8 @@ public class UITab extends JPanel {
     private void bubbleSort(CustomCollection<Student> collection, Comparator<Student> comparator){
         BubbleSorter<Student> bubbleSorter = new BubbleSorter<>();
         long start = System.nanoTime();
-        bubbleSorter.sort(collection, comparator);
+        Comparable<Student>[] arr = bubbleSorter.sort(collection, comparator);
+        collection.setArray(arr);
         long end = System.nanoTime();
         sortSpeedLabel.setText((end - start) / 1000_000f + " ms ");
         updateListModel(collection.getStringArray());

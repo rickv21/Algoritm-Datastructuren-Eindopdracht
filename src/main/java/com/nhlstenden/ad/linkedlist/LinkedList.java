@@ -2,6 +2,9 @@ package com.nhlstenden.ad.linkedlist;
 
 import com.nhlstenden.ad.data.CustomCollection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LinkedList<K extends Comparable<K>, V> implements CustomCollection<V> {
     private ListNode<K, V> head = null;
     private int size;
@@ -114,6 +117,40 @@ public class LinkedList<K extends Comparable<K>, V> implements CustomCollection<
         }
         array[i] = node.getValue().toString();
         return array;
+    }
+
+    //Needed because the linked list uses a list instead of a array.
+    public void setArray(Comparable<V>[] arr){
+        List<K> keys = new ArrayList<>();
+        List<V> values = new ArrayList<>();
+
+        List<V> temp = (List<V>) List.of(arr);
+
+
+        for (V value : temp) {
+            ListNode<K, V> node = head;
+            //Get keys for values.
+            if(node.getValue().equals(value)){
+                keys.add(node.getKey());
+                values.add(value);
+                continue;
+            }
+
+            while(node.getNext() != null){
+                node = node.getNext();
+                if(node.getValue().equals(value)){
+                    keys.add(node.getKey());
+                    values.add(value);
+                }
+            }
+
+        }
+        head = new ListNode<>(keys.get(0), values.get(0));
+        ListNode<K, V> next = head;
+        for(int i = 1; i < keys.size(); i++){
+            next.setNext(new ListNode<>(keys.get(i), values.get(i)));
+            next = next.getNext();
+        }
     }
 
     @Override
