@@ -4,12 +4,15 @@ import com.nhlstenden.ad.data.CircularBuffer;
 import com.nhlstenden.ad.data.CustomCollection;
 import com.nhlstenden.ad.data.treemap.TreeMap;
 import com.nhlstenden.ad.linkedlist.LinkedList;
+import com.nhlstenden.ad.searching.BinarySearch;
+import com.nhlstenden.ad.searching.Searcher;
 import com.nhlstenden.ad.searching.SequentialSearch;
 import com.nhlstenden.ad.sorting.BubbleSorter;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -25,7 +28,7 @@ public class UITab extends JPanel {
     private final DefaultListModel<String> resultModel = new DefaultListModel<>();
     private final DefaultListModel<String> listModel = new DefaultListModel<>();
     private final CustomCollection<Student> collection;
-
+    private JButton binarySearch;
     public UITab(CustomCollection<Student> collection, String title){
         this.collection = collection;
         generateTab(collection, title);
@@ -52,12 +55,14 @@ public class UITab extends JPanel {
       //  addElement(panel, titleLabel);
         addElement(panel, sizeLabel);
         clearButton.addActionListener(e -> {
+            binarySearch.setEnabled(false);
             collection.clear();
             listModel.clear();
             resultModel.clear();
             sizeLabel.setText("Size: 0");
         });
         importButton.addActionListener(e -> {
+            binarySearch.setEnabled(collection instanceof TreeMap<?, ?>);
             loadDataSet();
             updateListModel(collection.getStringArray());
             sizeLabel.setText("Size: " + collection.getSize());
@@ -187,34 +192,36 @@ public class UITab extends JPanel {
 
         JButton sequentialSearch = new JButton("Sequential Search");
         sequentialSearch.setAlignmentX(CENTER_ALIGNMENT);
-        sequentialSearch.addActionListener(e -> {
-            SequentialSearch<String, Student> search = new SequentialSearch<>();
-
-            long start = System.nanoTime();
-            Set<Student> students = search.search(jTextField.getText(), collection, Student::getFirstName);
-            students.addAll(search.search(jTextField.getText(), collection, Student::getLastName));
-            long end = System.nanoTime();
-            sequentialSearchSpeedLabel.setText((end - start) / 1000_000f + " ms ");
-            resultModel.clear();
-            if(students.isEmpty()){
-                resultModel.addElement("Not found");
-            } else {
-                for(Student student : students){
-                    resultModel.addElement(student.toString());
-                }
-            }
-
-        });
+        sequentialSearch.addActionListener(e -> search(new SequentialSearch<>(), jTextField, sequentialSearchSpeedLabel));
         resultLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(resultLabel);
 
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         addElement(panel, sequentialSearch, 15);
 
-        JButton binarySearch = new JButton("Binary Search");
+        binarySearch = new JButton("Binary Search");
+        binarySearch.setToolTipText("De collectie moet gesorteerd zijn voor gebruik.");
+        binarySearch.setEnabled(false);
+        binarySearch.addActionListener(e -> search(new BinarySearch<>(), jTextField, binarySearchSpeedLabel));
         binarySearch.setAlignmentX(CENTER_ALIGNMENT);
         panel.add(binarySearch);
         return panel;
+    }
+
+    private void search(Searcher<String, Student> searcher, JTextField input, JLabel label){
+        long start = System.nanoTime();
+        Set<Student> students = searcher.search(input.getText(), collection, Student::getFirstName);
+        students.addAll(searcher.search(input.getText(), collection, Student::getLastName));
+        long end = System.nanoTime();
+        label.setText((end - start) / 1000_000f + " ms ");
+        resultModel.clear();
+        if(students.isEmpty()){
+            resultModel.addElement("Not found");
+        } else {
+            for(Student student : students){
+                resultModel.addElement(student.toString());
+            }
+        }
     }
 
     private JPanel generateSortButtons(CustomCollection<Student> collection){
@@ -266,6 +273,7 @@ public class UITab extends JPanel {
         long end = System.nanoTime();
         sortSpeedLabel.setText((end - start) / 1000_000f + " ms ");
         updateListModel(collection.getStringArray());
+        binarySearch.setEnabled(true);
     }
 
     private void balanceMap(TreeMap<Integer, Student> treeMap){
