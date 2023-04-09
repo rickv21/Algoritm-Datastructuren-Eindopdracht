@@ -25,16 +25,21 @@ public class TreeMap<K extends Comparable<K>, V> implements CustomCollection<V> 
      * @return a new node if a position is found, and then recursively return the parent in order to build the treemap.
      */
     public Node<K, V> add(Node<K, V> parent, K key, V value) {
+        int counter = 0;
         if (root == null) {
             root = new Node<>(key, value);
             size++;
-            System.out.println(value + " - " +size);
-            nodes.clear();
-            populateNodeWithNodes(root);
+            //System.out.println(value + " - " +size);
+            //populateNodeWithNodes(root);
+            for (Node<K, V> node : this.nodes) {
+                System.out.println("Key:" + node.getKey() + "Counter: " + counter);
+                counter++;
+            }
+            System.out.println("----------------");
             return root;
         }
         if (parent != null) {
-            System.out.println(value + " - no number");
+            //System.out.println(value + " - no number");
             // Check if the key is smaller or greater than the key of the parent node.
             if (key.compareTo(parent.getKey()) < 0) {
                 parent.setLeft(add(parent.getLeft(), key, value));
@@ -42,13 +47,15 @@ public class TreeMap<K extends Comparable<K>, V> implements CustomCollection<V> 
                 parent.setRight(add(parent.getRight(), key, value));
             }
             // Recursively return parent to build treemap.
-            nodes.clear();
-            populateNodeWithNodes(root);
+            for (Node<K, V> node : this.nodes) {
+                System.out.println("Key: "+ node.getKey() + "Counter: " + counter);
+                counter++;
+            }
+            System.out.println("----------------");
             return parent;
         } else {
             // If a position is found, return a new node with the specified key value pair in order to place it in the found position.
             size++;
-            System.out.println(value + " - " +size);
             return new Node<>(key, value);
         }
     }
@@ -101,7 +108,7 @@ public class TreeMap<K extends Comparable<K>, V> implements CustomCollection<V> 
      * @param parent the root node of the treemap.
      */
     public void balanceTree(Node<K, V> parent) {
-        nodes.clear();
+        //nodes.clear();
         populateNodeWithNodes(parent);
 
         // Sort the nodes arraylist based on key from lowest to highest.
@@ -126,7 +133,9 @@ public class TreeMap<K extends Comparable<K>, V> implements CustomCollection<V> 
         for (Node<K, V> node : this.nodes) {
         //    System.out.println(node);
             add(this.root, node.getKey(), node.getValue());
+            //System.out.println("hello");
         }
+        nodes.clear();
 
     }
 
