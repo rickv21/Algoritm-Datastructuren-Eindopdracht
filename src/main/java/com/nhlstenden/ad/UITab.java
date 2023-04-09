@@ -275,7 +275,6 @@ public class UITab extends JPanel {
         sortSpeedLabel.setText((end - start) / 1000_000f + " ms ");
         treeMap.populateNodeWithNodes(treeMap.root);
         updateListModel(treeMap.getStringArray());
-        treeMap.getNodes().clear();
     }
 
     private void updateListModel(String[] array){
