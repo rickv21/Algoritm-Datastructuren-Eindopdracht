@@ -1,29 +1,29 @@
 package com.nhlstenden.ad.data.treemap;
 
-public class Node<K extends Comparable<K>, T> {
-    private Node<K, T> left = null;
-    private Node<K, T> right = null;
+public class Node<K extends Comparable<K>, V> {
+    private Node<K, V> left = null;
+    private Node<K, V> right = null;
     private K key;
-    private T value;
+    private V value;
 
-    public Node(K key, T value) {
+    public Node(K key, V value) {
         this.key = key;
         this.value = value;
     }
 
-    public Node<K, T> getLeft() {
+    public Node<K, V> getLeft() {
         return left;
     }
 
-    public void setLeft(Node<K, T> left) {
+    public void setLeft(Node<K, V> left) {
         this.left = left;
     }
 
-    public Node<K, T> getRight() {
+    public Node<K, V> getRight() {
         return right;
     }
 
-    public void setRight(Node<K, T> right) {
+    public void setRight(Node<K, V> right) {
         this.right = right;
     }
 
@@ -35,11 +35,11 @@ public class Node<K extends Comparable<K>, T> {
         this.key = key;
     }
 
-    public T getValue() {
+    public V getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    public void setValue(V value) {
         this.value = value;
     }
 

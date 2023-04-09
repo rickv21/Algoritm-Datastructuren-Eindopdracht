@@ -1,10 +1,14 @@
 package com.nhlstenden.ad.data;
 
-public interface CustomCollection<T> {
+public interface CustomCollection<V> {
 
-    T[] getArray();
+    V[] getArray();
+
+    void setArray(Comparable<V>[] arr);
 
     String[] getStringArray();
 
     int getSize();
+
+    void clear();
 }
